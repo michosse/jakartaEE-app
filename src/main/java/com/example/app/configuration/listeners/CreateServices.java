@@ -8,7 +8,8 @@ import jakarta.servlet.annotation.WebListener;
 public class CreateServices implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        UserRepository userRepository = new UserRepository();
+        String avatarsPath = sce.getServletContext().getInitParameter("avatarsPath");
+        UserRepository userRepository = new UserRepository(avatarsPath);
         sce.getServletContext().setAttribute("userService", new UserService(userRepository));
     }
 }

@@ -4,6 +4,10 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0"
          metadata-complete="false">
+    <context-param>
+        <param-name>avatarsPath</param-name>
+        <param-value>D:\JakartaEE\jakartaee-app\src\main\resources\com\example\app\configuration\avatars\</param-value>
+    </context-param>
     <listener>
         <listener-class>com.example.app.configuration.listeners.CreateServices</listener-class>
     </listener>

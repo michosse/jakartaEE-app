@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 public class InitializeData implements ServletContextListener {
-    private String avatarsUri = "../../../../../classes/com/example/app/configuration/avatars/";
+    private String avatarsUri;
     private UserService userService;
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         userService = (UserService) sce.getServletContext().getAttribute("userService");
+        avatarsUri = sce.getServletContext().getInitParameter("avatarsPath");
         User u1 = User.builder()
                 .id(UUID.fromString("7d35156e-77f5-495c-b2b5-78538145ca5a"))
                 .name("test1")
