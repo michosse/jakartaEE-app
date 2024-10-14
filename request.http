@@ -1,0 +1,14 @@
+GET http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
+
+####
+DELETE http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
+
+###
+PUT http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="avatar"; filename="test4.png"
+
+< ./test4.png
+--WebAppBoundary--
