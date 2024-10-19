@@ -1,6 +1,5 @@
 package com.example.app.repositories;
 
-import com.example.app.configuration.listeners.InitializeData;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 
@@ -14,7 +13,12 @@ import java.util.stream.Collectors;
 
 public class UserRepository {
     private final Set<User> users = new HashSet<>();
-    private String avatarsUri = "../../../../../classes/com/example/app/configuration/avatars/";
+    private final String avatarsUri;
+
+    public UserRepository(String avatarsUri) {
+        this.avatarsUri = avatarsUri;
+    }
+
     public Optional<User> find(UUID id) {
         return users.stream().filter(u -> u.getId().equals(id)).findFirst();
     }
@@ -62,7 +66,11 @@ public class UserRepository {
         Optional<User> userToChange = users.stream().filter(u->u.getId().equals(id)).findFirst();
         if(userToChange.isPresent()){
             userToChange.get().setAvatar(null);
+            try{
             deleteAvatarFile(userToChange.get().getName());
+            } catch (IllegalStateException e){
+                throw new HttpRequestException("Avatar not found", 404);
+            }
         }else {
             throw new HttpRequestException("User not found",404);
         }
