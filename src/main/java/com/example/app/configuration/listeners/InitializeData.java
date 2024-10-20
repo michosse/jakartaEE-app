@@ -1,30 +1,46 @@
 package com.example.app.configuration.listeners;
 
+import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.entities.User;
 import com.example.app.enums.Gender;
+import com.example.app.services.GameService;
+import com.example.app.services.TicketService;
 import com.example.app.services.UserService;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
-import lombok.Getter;
-import lombok.SneakyThrows;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.control.RequestContextController;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-public class InitializeData implements ServletContextListener {
-    private String avatarsUri;
-    private UserService userService;
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        userService = (UserService) sce.getServletContext().getAttribute("userService");
-        avatarsUri = sce.getServletContext().getInitParameter("avatarsPath");
+@ApplicationScoped
+public class InitializeData{
+    private final String avatarsUri;
+    private final UserService userService;
+    private final GameService gameService;
+    private final TicketService ticketService;
+    private final RequestContextController requestContextController;
+
+    @Inject
+    public InitializeData(UserService userService, GameService gameService, TicketService ticketService, RequestContextController requestContextController) {
+        this.userService = userService;
+        this.gameService = gameService;
+        this.ticketService = ticketService;
+        this.requestContextController = requestContextController;
+        this.avatarsUri = "D:\\JakartaEE\\jakartaEE-app\\src\\main\\resources\\com\\example\\app\\configuration\\avatars\\";
+    }
+    public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
+     init();
+    }
+    private void init(){
+        requestContextController.activate();
         User u1 = User.builder()
                 .id(UUID.fromString("7d35156e-77f5-495c-b2b5-78538145ca5a"))
                 .name("test1")
@@ -57,10 +73,59 @@ public class InitializeData implements ServletContextListener {
                 .tickets(new ArrayList<Ticket>())
                 .avatar(getResourceAsByteArray("test4.png"))
                 .build();
+        Game g1 = Game.builder()
+                .id(UUID.randomUUID())
+                .tickets(new ArrayList<>())
+                .team1("Drużyna11")
+                .team2("Drużyna12")
+                .gameDay(LocalDate.now())
+                .build();
+        Game g2 = Game.builder()
+                .id(UUID.randomUUID())
+                .tickets(new ArrayList<>())
+                .team1("Drużyna21")
+                .team2("Drużyna22")
+                .gameDay(LocalDate.now())
+                .build();
+        Ticket t1 = Ticket.builder()
+                .id(UUID.randomUUID())
+                .user(u1)
+                .stake(2.2)
+                .isWon(false)
+                .game(g1)
+                .build();
+        Ticket t2 = Ticket.builder()
+                .id(UUID.randomUUID())
+                .user(u2)
+                .stake(2.3)
+                .isWon(false)
+                .game(g2)
+                .build();
+        Ticket t3 = Ticket.builder()
+                .id(UUID.randomUUID())
+                .user(u3)
+                .stake(2.2)
+                .isWon(false)
+                .game(g1)
+                .build();
+        Ticket t4 = Ticket.builder()
+                .id(UUID.randomUUID())
+                .user(u4)
+                .stake(2.3)
+                .isWon(false)
+                .game(g2)
+                .build();
         userService.createUser(u1);
         userService.createUser(u2);
         userService.createUser(u3);
         userService.createUser(u4);
+        gameService.createGame(g1);
+        gameService.createGame(g2);
+        ticketService.createTicket(t1);
+        ticketService.createTicket(t2);
+        ticketService.createTicket(t3);
+        ticketService.createTicket(t4);
+        requestContextController.deactivate();
     }
 
     private byte[] getResourceAsByteArray(String fileName) {

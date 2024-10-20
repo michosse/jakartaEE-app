@@ -5,15 +5,20 @@ import com.example.app.DTOs.GetUsersResponse;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.UserService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@NoArgsConstructor(force = true)
+@ApplicationScoped
 public class UserController {
     private final UserService service;
 
+    @Inject
     public UserController(UserService service) {
         this.service = service;
     }
@@ -28,8 +33,6 @@ public class UserController {
                     .name(user.get().getName())
                     .tickets(user.get().getTickets().stream().map(t -> GetUserResponse.Ticket.builder()
                             .id(t.getId())
-                            .stake(t.getStake())
-                            .isWon(t.isWon())
                             .build()).collect(Collectors.toList()))
                     .build();
             return userDTO;

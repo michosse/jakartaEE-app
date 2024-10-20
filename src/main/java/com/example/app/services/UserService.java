@@ -2,14 +2,18 @@ package com.example.app.services;
 
 import com.example.app.entities.User;
 import com.example.app.repositories.UserRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+@NoArgsConstructor(force = true)
+@ApplicationScoped
 public class UserService {
     private final UserRepository repository;
-
+    @Inject
     public UserService(UserRepository repository) {
         this.repository = repository;
     }

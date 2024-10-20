@@ -6,16 +6,6 @@
          metadata-complete="false">
     <context-param>
         <param-name>avatarsPath</param-name>
-        <param-value>D:\JakartaEE\jakartaee-app\src\main\resources\com\example\app\configuration\avatars\</param-value>
+        <param-value>/home/student/188612/jakartaEE-app/src/main/resources/com/example/app/configuration/avatars/</param-value>
     </context-param>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.CreateServices</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.InitializeData</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.CreateControllers</listener-class>
-    </listener>
-
 </web-app>

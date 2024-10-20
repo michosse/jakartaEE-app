@@ -3,6 +3,7 @@ package com.example.app.entities;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
@@ -12,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class Ticket {
+public class Ticket implements Serializable {
     private UUID id;
     private double stake;
     private boolean isWon;

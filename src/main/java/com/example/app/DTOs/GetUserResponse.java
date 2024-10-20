@@ -23,8 +23,6 @@ public class GetUserResponse {
     @EqualsAndHashCode
     public static class Ticket{
         private UUID id;
-        private double stake;
-        private boolean isWon;
     }
     private UUID id;
     private String name;
