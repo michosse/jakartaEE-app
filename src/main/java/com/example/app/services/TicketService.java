@@ -1,10 +1,8 @@
 package com.example.app.services;
 
 import com.example.app.entities.Ticket;
-import com.example.app.repositories.GameRepository;
 import com.example.app.repositories.TicketRepository;
-import com.example.app.repositories.UserRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor(force = true)
-@ApplicationScoped
+@RequestScoped
 public class TicketService {
     private final TicketRepository ticketRepository;
 

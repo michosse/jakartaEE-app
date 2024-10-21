@@ -3,7 +3,7 @@ package com.example.app.services;
 import com.example.app.entities.Game;
 import com.example.app.repositories.GameRepository;
 import com.example.app.repositories.TicketRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor(force = true)
-@ApplicationScoped
+@RequestScoped
 public class GameService {
     private final GameRepository gameRepository;
     private final TicketRepository ticketRepository;

@@ -2,7 +2,7 @@ package com.example.app.services;
 
 import com.example.app.entities.User;
 import com.example.app.repositories.UserRepository;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @NoArgsConstructor(force = true)
-@ApplicationScoped
+@RequestScoped
 public class UserService {
     private final UserRepository repository;
     @Inject

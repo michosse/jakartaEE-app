@@ -5,16 +5,15 @@ import com.example.app.DTOs.GetUsersResponse;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.UserService;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 @NoArgsConstructor(force = true)
-@ApplicationScoped
+@RequestScoped
 public class UserController {
     private final UserService service;
 
