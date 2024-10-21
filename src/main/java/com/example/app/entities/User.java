@@ -4,6 +4,7 @@ import com.example.app.enums.Gender;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class User {
+public class User implements Serializable {
     private UUID id;
     private String name;
     private int age;

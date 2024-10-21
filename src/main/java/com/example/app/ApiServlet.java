@@ -2,37 +2,34 @@ package com.example.app;
 
 import com.example.app.controllers.UserController;
 import com.example.app.exceptions.HttpRequestException;
+import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 @WebServlet(urlPatterns = {
         ApiServlet.Paths.API + "/*"
 })
 @MultipartConfig(maxFileSize = 200 * 1024)
 public class ApiServlet extends HttpServlet {
 
-    private UserController userController;
-    public static final class Paths {
+    private final UserController userController;
 
-        /**
-         * All API operations. Version v1 will be used to distinguish from other implementations.
-         */
+
+    public static final class Paths {
         public static final String API = "/api";
 
     }
-
     public static final class Patterns {
         private static final Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
         public static final Pattern USERS = Pattern.compile("/users/?");
@@ -40,11 +37,9 @@ public class ApiServlet extends HttpServlet {
         public static final Pattern USERS_AVATAR = Pattern.compile("/users/(%s)/avatar".formatted(UUID.pattern()));
     }
     private final Jsonb jsonb = JsonbBuilder.create();
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        userController = (UserController) getServletContext().getAttribute("userController");
+    @Inject
+    public ApiServlet(UserController userController) {
+        this.userController = userController;
     }
 
     @Override

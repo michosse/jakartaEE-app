@@ -1,7 +1,13 @@
 package com.example.app.repositories;
 
+import com.example.app.entities.Game;
+import com.example.app.entities.Ticket;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,14 +17,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(force = true)
+@ApplicationScoped
 public class UserRepository {
     private final Set<User> users = new HashSet<>();
-    private final String avatarsUri;
-
-    public UserRepository(String avatarsUri) {
-        this.avatarsUri = avatarsUri;
-    }
-
+    @Resource(name = "avatarsPath")
+    private String avatarsUri;
     public Optional<User> find(UUID id) {
         return users.stream().filter(u -> u.getId().equals(id)).findFirst();
     }
@@ -36,10 +40,18 @@ public class UserRepository {
         if(userToChange.isPresent()){
             userToChange.get().setAge(user.getAge());
             userToChange.get().setName(user.getName());
-            userToChange.get().setTickets(user.getTickets());
             userToChange.get().setGender(user.getGender());
         }
 
+    }
+    public void addTicket(Ticket ticket){
+        Optional<User> user = users.stream().filter(u->u.getId().equals(ticket.getUser().getId())).findFirst();
+        if(user.isPresent()){
+            user.get().getTickets().add(ticket);
+        }
+        else {
+            throw new HttpRequestException("User with this id does not exist", 404);
+        }
     }
     public void putAvatar(UUID id, byte[] avatar) {
         Optional<User> userToChange = users.stream().filter(u -> u.getId().equals(id)).findFirst();

@@ -4,18 +4,9 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0"
          metadata-complete="false">
-    <context-param>
-        <param-name>avatarsPath</param-name>
-        <param-value>D:\JakartaEE\jakartaee-app\src\main\resources\com\example\app\configuration\avatars\</param-value>
-    </context-param>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.CreateServices</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.InitializeData</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.example.app.configuration.listeners.CreateControllers</listener-class>
-    </listener>
-
+    <env-entry>
+        <env-entry-name>avatarsPath</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>PathToYourAvatarsDirectory</env-entry-value>
+    </env-entry>
 </web-app>
