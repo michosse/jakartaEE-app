@@ -4,8 +4,9 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0"
          metadata-complete="false">
-    <context-param>
-        <param-name>avatarsPath</param-name>
-        <param-value>/home/student/188612/jakartaEE-app/src/main/resources/com/example/app/configuration/avatars/</param-value>
-    </context-param>
+    <env-entry>
+        <env-entry-name>avatarsPath</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>PathToYourAvatarsDirectory</env-entry-value>
+    </env-entry>
 </web-app>

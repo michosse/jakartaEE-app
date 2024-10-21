@@ -7,6 +7,7 @@ import com.example.app.enums.Gender;
 import com.example.app.services.GameService;
 import com.example.app.services.TicketService;
 import com.example.app.services.UserService;
+import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.control.RequestContextController;
@@ -22,7 +23,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 @ApplicationScoped
 public class InitializeData{
-    private final String avatarsUri;
+    @Resource(name = "avatarsPath")
+    private String avatarsUri;
     private final UserService userService;
     private final GameService gameService;
     private final TicketService ticketService;
@@ -34,7 +36,6 @@ public class InitializeData{
         this.gameService = gameService;
         this.ticketService = ticketService;
         this.requestContextController = requestContextController;
-        this.avatarsUri = "D:\\JakartaEE\\jakartaEE-app\\src\\main\\resources\\com\\example\\app\\configuration\\avatars\\";
     }
     public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) Object init) {
      init();

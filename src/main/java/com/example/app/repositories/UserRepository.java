@@ -4,6 +4,7 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
+import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
@@ -16,14 +17,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(force = true)
 @ApplicationScoped
 public class UserRepository {
     private final Set<User> users = new HashSet<>();
-    private final String avatarsUri;
-    public UserRepository() {
-        this.avatarsUri = "D:\\JakartaEE\\jakartaEE-app\\src\\main\\resources\\com\\example\\app\\configuration\\avatars\\";
-    }
-
+    @Resource(name = "avatarsPath")
+    private String avatarsUri;
     public Optional<User> find(UUID id) {
         return users.stream().filter(u -> u.getId().equals(id)).findFirst();
     }
