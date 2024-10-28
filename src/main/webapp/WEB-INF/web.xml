@@ -9,4 +9,17 @@
         <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value>PathToYourAvatarsDirectory</env-entry-value>
     </env-entry>
+    <servlet>
+        <servlet-name>facesServlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
 </web-app>

@@ -35,7 +35,7 @@ public class GameService {
     public void updateGame(Game game){
         gameRepository.update(game);
     }
-    public void deleteGame(Game game){
-        gameRepository.delete(game);
+    public void deleteGame(UUID id){
+        gameRepository.delete(id);
     }
 }

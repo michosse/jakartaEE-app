@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{ticketView.id}" required="true"/>
+        <f:viewAction action="#{ticketView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <header>
+            <h2>Ticket detailst</h2>
+        </header>
+        <div>
+            <div>
+                Id: <h:outputText value="#{ticketView.ticket.id}"/>
+            </div>
+            <div>
+                Stake: <h:outputText value="#{ticketView.ticket.stake}"/>
+            </div>
+            <div>
+                Is won: <h:outputText value="#{ticketView.ticket.status}"/>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -29,9 +29,10 @@ public class UserService {
     public void updateUser(User user){
         repository.update(user);
     }
-    public void deleteUser(User user){
-        repository.delete(user);
+    public void deleteUser(UUID id){
+        repository.delete(id);
     }
+
     public byte[] getUsersAvatar(UUID id){
         return repository.getAvatar(id);
     }

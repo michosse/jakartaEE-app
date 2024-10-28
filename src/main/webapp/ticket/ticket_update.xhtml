@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{ticketUpdate.id}" required="true"/>
+        <f:viewAction action="#{ticketUpdate.init()}"/>
+    </f:metadata>
+    <ui:define name="content">
+        <header>
+            <h2>Update ticket</h2>
+        </header>
+        <div>
+            <h:outputText value="#{ticketUpdate.id}"/>
+            <h:form enctype="multipart/form-data">
+                <div>
+                    <h:outputLabel for="id" value="id:"/>
+                    <h:inputText id="id" value="#{ticketUpdate.ticket.id}"/>
+                </div>
+                <div>
+                    <h:outputLabel for="stake" value="Stake:"/>
+                    <h:inputText id="stake" value="#{ticketUpdate.ticket.stake}"/>
+                </div>
+                <div>
+                    <h:outputLabel for="status" value="Status:"/>
+                    <h:inputText id="status" value="#{ticketUpdate.ticket.status}"/>
+                </div>
+                <h:commandButton value="Submit" action="#{ticketUpdate.update()}" />
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
