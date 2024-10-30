@@ -42,8 +42,12 @@ public class TicketRepository {
     public void delete(UUID id){
         Optional<Ticket> ticket = this.find(id);
         if(ticket.isPresent()){
-            gameRepository.deleteTicket(id,ticket.get().getGame().getId());
-            userRepository.deleteTicket(id,ticket.get().getUser().getId());
+            if(ticket.get().getGame() != null){
+                gameRepository.deleteTicket(id,ticket.get().getGame().getId());
+            }
+            if(ticket.get().getUser() != null){
+                userRepository.deleteTicket(id,ticket.get().getUser().getId());
+            }
             tickets.removeIf(t->t.getId().equals(id));
         }
         else {
