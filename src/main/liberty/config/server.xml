@@ -3,6 +3,7 @@
         <feature>servlet-6.0</feature>
         <feature>jsonb-3.0</feature>
         <feature>cdi-4.0</feature>
+        <feature>faces-4.0</feature>
     </featureManager>
-    <applicationMonitor updateTrigger="disabled"/>
+    <applicationMonitor updateTrigger="enabled"/>
 </server>

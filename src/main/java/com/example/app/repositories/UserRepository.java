@@ -21,8 +21,13 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class UserRepository {
     private final Set<User> users = new HashSet<>();
+    private final TicketRepository ticketRepository;
     @Resource(name = "avatarsPath")
     private String avatarsUri;
+    @Inject
+    public UserRepository(TicketRepository ticketRepository){
+        this.ticketRepository = ticketRepository;
+    }
     public Optional<User> find(UUID id) {
         return users.stream().filter(u -> u.getId().equals(id)).findFirst();
     }
@@ -32,8 +37,17 @@ public class UserRepository {
     public void create(User user){
         users.add(user);
     }
-    public void delete(User user){
-        users.remove(user);
+    public void delete(UUID id){
+        Optional<User> user = this.find(id);
+        if(user.isPresent()){
+            for (Ticket t: user.get().getTickets()) {
+                ticketRepository.delete(t.getId());
+            }
+            users.remove(user.get());
+        }
+        else {
+            throw new HttpRequestException(404);
+        }
     }
     public void update(User user){
         Optional<User> userToChange = users.stream().filter(u -> u.getId().equals(user.getId())).findFirst();
@@ -53,6 +67,18 @@ public class UserRepository {
             throw new HttpRequestException("User with this id does not exist", 404);
         }
     }
+
+    public void deleteTicket(UUID ticketId, UUID userId){
+        Optional<User> user = this.find(userId);
+        if(user.isPresent()){
+            Optional<Ticket> ticket = user.get().getTickets().stream().filter(t->t.getId().equals(ticketId)).findFirst();
+            ticket.ifPresent(value -> user.get().getTickets().remove(value));
+        }
+        else {
+            throw new HttpRequestException(404);
+        }
+    }
+
     public void putAvatar(UUID id, byte[] avatar) {
         Optional<User> userToChange = users.stream().filter(u -> u.getId().equals(id)).findFirst();
         if(userToChange.isPresent()){

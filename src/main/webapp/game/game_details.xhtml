@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{gameView.id}" required="true"/>
+        <f:viewAction action="#{gameView.init()}"/>
+    </f:metadata>
+
+    <ui:define name="content">
+        <header>
+            <h2>Game detailst</h2>
+        </header>
+        <div>
+            <div>
+                Id: <h:outputText value="#{gameView.game.id}"/>
+            </div>
+            <div>
+                Day: <h:outputText value="#{gameView.game.gameDay}"/>
+            </div>
+            <div>
+                Teams: <h:outputText value="#{gameView.game.team1}"/> : <h:outputText value="#{gameView.game.team2}"/>
+            </div>
+            <div>
+                Tickets: <br/>
+                <h:dataTable value="#{gameView.game.tickets}" var="ticket">
+                    <h:column>
+                        <h:link outcome="/ticket/ticket_details.xhtml">
+                            <f:param name="id" value="#{ticket.id}"/>
+                            <h:outputText value="#{ticket.id}"/>
+                        </h:link>
+                    </h:column>
+                    <h:column>
+                        <h:form>
+                            <h:commandButton value="Delete" action="#{gameView.deleteTicket(ticket.id)}"/>
+                            <h:link outcome="/ticket/ticket_update.xhtml">
+                                <f:param name="id" value="#{ticket.id}"/>
+                                Update
+                            </h:link>
+                        </h:form>
+                    </h:column>
+                </h:dataTable>
+                <h:link outcome="/ticket/ticket_create.xhtml">
+                    Create new ticket
+                </h:link>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

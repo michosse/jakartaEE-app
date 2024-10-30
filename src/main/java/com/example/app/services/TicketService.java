@@ -31,8 +31,8 @@ public class TicketService {
     public void updateTicket(Ticket ticket){
         ticketRepository.update(ticket);
     }
-    public void deleteTicket(Ticket ticket){
-        ticketRepository.delete(ticket);
+    public void deleteTicket(UUID id){
+        ticketRepository.delete(id);
     }
 
 

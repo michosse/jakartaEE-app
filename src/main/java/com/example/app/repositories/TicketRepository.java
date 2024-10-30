@@ -32,11 +32,27 @@ public class TicketRepository {
     }
     public void create(Ticket ticket){
         tickets.add(ticket);
-        gameRepository.addTicket(clone(ticket));
-        userRepository.addTicket(clone(ticket));
+        if(ticket.getUser() != null){
+            userRepository.addTicket(clone(ticket));
+        }
+        if(ticket.getGame() != null){
+            gameRepository.addTicket(clone(ticket));
+        }
     }
-    public void delete(Ticket ticket){
-        tickets.remove(ticket);
+    public void delete(UUID id){
+        Optional<Ticket> ticket = this.find(id);
+        if(ticket.isPresent()){
+            if(ticket.get().getGame() != null){
+                gameRepository.deleteTicket(id,ticket.get().getGame().getId());
+            }
+            if(ticket.get().getUser() != null){
+                userRepository.deleteTicket(id,ticket.get().getUser().getId());
+            }
+            tickets.removeIf(t->t.getId().equals(id));
+        }
+        else {
+            throw new HttpRequestException(404);
+        }
     }
     public void update(Ticket ticket){
         Optional<Ticket> ticketToChange = tickets.stream().filter(t->t.getId().equals(ticket.getId())).findFirst();

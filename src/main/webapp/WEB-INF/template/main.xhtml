@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<f:view>
+    <h:head>
+        <meta charset="UTF-8"/>
+        <h:outputScript library="mdb" name="js/main.js" target="body"/>
+    </h:head>
+
+    <h:body>
+        <nav>
+            <div style="display: flex">
+                <h:link outcome="/index.xhtml">Home</h:link>
+                <h:link style="margin-left: 10px" outcome="/game/game_list.xhtml">Games</h:link>
+            </div>
+        </nav>
+        <h:graphicImage
+                alt="Logo"
+                value="/resources/images/logo.png"
+        />
+        <main>
+            <ui:insert name="content"/>
+        </main>
+        <footer>
+            Michał Lemański
+        </footer>
+    </h:body>
+</f:view>
+</html>

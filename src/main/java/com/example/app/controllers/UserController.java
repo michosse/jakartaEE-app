@@ -2,6 +2,8 @@ package com.example.app.controllers;
 
 import com.example.app.DTOs.GetUserResponse;
 import com.example.app.DTOs.GetUsersResponse;
+import com.example.app.DTOs.PutUserRequest;
+import com.example.app.entities.Ticket;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.UserService;
@@ -9,6 +11,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -48,6 +51,34 @@ public class UserController {
                         .name(u.getName())
                         .build()).collect(Collectors.toList()))
                 .build();
+    }
+
+    public void createUser(PutUserRequest user){
+        User userToPut = User.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .age(user.getAge())
+                .gender(user.getGender())
+                .tickets(new ArrayList<Ticket>())
+                .avatar(null)
+                .build();
+        service.createUser(userToPut);
+    }
+
+    public void updateUser(PutUserRequest user){
+        User userToUpdate = User.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .age(user.getAge())
+                .gender(user.getGender())
+                .tickets(new ArrayList<Ticket>())
+                .avatar(null)
+                .build();
+        service.updateUser(userToUpdate);
+    }
+
+    public void deleteUser(UUID id){
+        service.deleteUser(id);
     }
 
     public byte[] getUsersAvatar(UUID id){

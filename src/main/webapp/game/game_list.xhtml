@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/template/main.xhtml">
+    <ui:define name="content">
+        <header>
+            <h2>Games list</h2>
+        </header>
+        <h:dataTable value="#{gamesList.games.games}" var="game">
+            <h:column>
+                <h:link outcome="/game/game_details.xhtml">
+                    <f:param name="id" value="#{game.id}"/>
+                    <h:outputText value="#{game.id}"/>
+                </h:link>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{game.team1}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{game.team2}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{game.gameDay}"/>
+            </h:column>
+            <h:column>
+                <h:form>
+                    <h:commandButton value="Delete" action="#{gamesList.delete(game.id)}"/>
+                </h:form>
+            </h:column>
+
+        </h:dataTable>
+    </ui:define>
+</ui:composition>

@@ -4,15 +4,21 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @ApplicationScoped
 public class GameRepository {
     private final Set<Game> games = new HashSet<>();
+    private final TicketRepository ticketRepository;
+    @Inject
+    public GameRepository(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
+    }
 
     public Optional<Game> find(UUID id){
         return games.stream().filter(g->g.getId().equals(id)).findFirst();
@@ -23,8 +29,18 @@ public class GameRepository {
     public void create(Game game){
         games.add(game);
     }
-    public void delete(Game game){
-        games.remove(game);
+    public void delete(UUID id){
+        Optional<Game> game = this.find(id);
+        if(game.isPresent()){
+            List<UUID> ticketIds = game.get().getTickets().stream()
+                    .map(g -> g.getId())
+                    .collect(Collectors.toList());
+            ticketIds.forEach(i -> ticketRepository.delete(i));
+            games.remove(game.get());
+        }
+        else {
+            throw new HttpRequestException(404);
+        }
     }
     public void update(Game game){
         Optional<Game> gameToChange = games.stream().filter(g->g.getId().equals(game.getId())).findFirst();
@@ -44,6 +60,16 @@ public class GameRepository {
         }
         else {
             throw new HttpRequestException("Game with this id does not exist", 404);
+        }
+    }
+    public void deleteTicket(UUID ticketId, UUID gameId){
+        Optional<Game> game = this.find(gameId);
+        if(game.isPresent()){
+            Optional<Ticket> ticket = game.get().getTickets().stream().filter(t->t.getId().equals(ticketId)).findFirst();
+            ticket.ifPresent(value -> game.get().getTickets().remove(value));
+        }
+        else {
+            throw new HttpRequestException(404);
         }
     }
 }
