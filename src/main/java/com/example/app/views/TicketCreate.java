@@ -1,6 +1,6 @@
 package com.example.app.views;
 
-import com.example.app.DTOs.PutTicketRequest;
+import com.example.app.DTOs.UpdateTicketRequest;
 import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.services.GameService;
@@ -24,7 +24,7 @@ public class TicketCreate implements Serializable {
     private final GameService gameService;
 
     @Getter
-    private PutTicketRequest ticket;
+    private UpdateTicketRequest ticket;
 
     @Getter
     @Setter
@@ -40,7 +40,7 @@ public class TicketCreate implements Serializable {
     }
 
     public void init(){
-        ticket = PutTicketRequest.builder()
+        ticket = UpdateTicketRequest.builder()
                 .id(UUID.randomUUID())
                 .build();
         games = gameService.findAll().stream().map(g->g.getId()).collect(Collectors.toList());

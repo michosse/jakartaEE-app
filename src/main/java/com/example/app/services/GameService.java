@@ -1,6 +1,7 @@
 package com.example.app.services;
 
 import com.example.app.entities.Game;
+import com.example.app.entities.Ticket;
 import com.example.app.repositories.GameRepository;
 import com.example.app.repositories.TicketRepository;
 import jakarta.enterprise.context.RequestScoped;
@@ -28,6 +29,9 @@ public class GameService {
     }
     public List<Game> findAll(){
         return gameRepository.findAll();
+    }
+    public List<Ticket> getAllTickets(UUID id){
+        return gameRepository.findAllTickets(id);
     }
     public void createGame(Game game){
         gameRepository.create(game);

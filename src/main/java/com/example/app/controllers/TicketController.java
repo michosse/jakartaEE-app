@@ -1,0 +1,126 @@
+package com.example.app.controllers;
+
+import com.example.app.DTOs.*;
+import com.example.app.entities.Game;
+import com.example.app.entities.Ticket;
+import com.example.app.exceptions.HttpRequestException;
+import com.example.app.services.GameService;
+import com.example.app.services.TicketService;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import lombok.NoArgsConstructor;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@RequestScoped
+@NoArgsConstructor(force = true)
+@Path("games/{gameid}/tickets")
+public class TicketController {
+    private final TicketService service;
+    private final GameService gameService;
+    private final UriInfo uriInfo;
+
+    @Inject
+    public TicketController(TicketService service, GameService gameService, UriInfo uriInfo) {
+        this.service = service;
+        this.gameService = gameService;
+        this.uriInfo = uriInfo;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGameTickets(@PathParam("gameid")UUID id){
+        List<Ticket> tickets = gameService.getAllTickets(id);
+        GetTicketsResponse response = GetTicketsResponse.builder()
+                .tickets(tickets.stream().map(t -> GetTicketsResponse.Ticket.builder()
+                        .id(t.getId())
+                        .status(t.isWon())
+                        .stake(t.getStake())
+                        .build()).collect(Collectors.toList()))
+                .build();
+        return Response.ok(response).build();
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTicket(@PathParam("gameid")UUID gameid, @PathParam("id")UUID id){
+        Optional<Ticket> ticket = service.find(id);
+        if(ticket.isPresent() && ticket.get().getGame().getId().equals(gameid)){
+            GetTicketResponse response = GetTicketResponse.builder()
+                    .id(ticket.get().getId())
+                    .stake(ticket.get().getStake())
+                    .status(ticket.get().isWon())
+                    .build();
+            return Response.ok(response).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveTicket(@PathParam("gameid")UUID gameid, PostTicketRequest request){
+        Optional<Game> game = gameService.find(gameid);
+        if(game.isPresent()){
+            Ticket ticket = Ticket.builder()
+                    .id(UUID.randomUUID())
+                    .stake(request.getStake())
+                    .isWon(request.isStatus())
+                    .user(null)
+                    .game(game.get())
+                    .build();
+            service.createTicket(ticket);
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path(TicketController.class)
+                    .path(TicketController.class, "getTicket")
+                    .build(gameid,ticket.getId())).build();
+        }
+        return Response.status(404,"Game with this id does not exist").build();
+    }
+
+    @PUT
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateTicket(@PathParam("gameid")UUID gameid, @PathParam("id")UUID id, PutTicketRequest request){
+        Optional<Game> game = gameService.find(gameid);
+        Optional<Ticket> ticket = service.find(id);
+        if(game.isEmpty()){
+            return Response.status(404,"Game with this id does not exist").build();
+        }
+        if(ticket.isEmpty()){
+            return Response.status(404,"Ticket with this id does not exist").build();
+        }
+        ticket.get().setWon(request.isStatus());
+        ticket.get().setStake(request.getStake());
+        ticket.get().setId(request.getId());
+        if(ticket.get().getGame().equals(game.get())){
+            ticket.get().setGame(game.get());
+        }
+        service.updateTicket(ticket.get());
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteTicket(@PathParam("gameid")UUID gameid,@PathParam("id")UUID id){
+        Optional<Ticket> ticket =service.find(id);
+        if(ticket.isEmpty() || !ticket.get().getGame().getId().equals(gameid)){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        try {
+            service.deleteTicket(id);
+            return Response.noContent().build();
+        } catch (HttpRequestException e){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+}

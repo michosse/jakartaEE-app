@@ -1,5 +1,7 @@
 package com.example.app.DTOs;
 
+import com.example.app.entities.Game;
+import com.example.app.entities.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,8 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class PutTicketRequest {
-    private UUID id;
+public class PostTicketRequest {
     private double stake;
     private boolean status;
 }

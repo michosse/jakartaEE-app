@@ -72,4 +72,12 @@ public class GameRepository {
             throw new HttpRequestException(404);
         }
     }
+
+    public List<Ticket> findAllTickets(UUID id) {
+        Optional<Game> game = this.find(id);
+        if(game.isPresent()){
+            return game.get().getTickets();
+        }
+        throw new HttpRequestException(404);
+    }
 }
