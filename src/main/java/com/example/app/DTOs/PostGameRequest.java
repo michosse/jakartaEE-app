@@ -3,6 +3,8 @@ package com.example.app.DTOs;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -12,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class PutTicketRequest {
-    private UUID id;
-    private double stake;
-    private boolean status;
+public class PostGameRequest {
+    private String team1;
+    private String team2;
+    private LocalDate gameDay;
 }

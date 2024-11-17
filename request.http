@@ -1,14 +1,57 @@
-GET http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
-
-####
-DELETE http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
+GET http://localhost:9080/jakartaee-app/api/games
 
 ###
-PUT http://localhost:9080/jakartaee-app/api/users/7423240b-807b-4f86-a131-35b2ca38f366/avatar
-Content-Type: multipart/form-data; boundary=WebAppBoundary
+GET http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8
 
---WebAppBoundary
-Content-Disposition: form-data; name="avatar"; filename="test4.png"
+###
+DELETE http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8
 
-< ./test4.png
---WebAppBoundary--
+###
+POST http://localhost:9080/jakartaee-app/api/games
+Content-Type: application/json
+
+{
+  "team1": "t1",
+  "team2": "t2",
+  "gameDay": "2024-11-04"
+}
+###
+PUT http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d
+Content-Type: application/json
+
+{
+  "id": "d07fd0e3-791c-49cc-870b-4946bf7d828d",
+  "team1": "nt1",
+  "team2": "nt2",
+  "gameDay": "2024-11-02"
+}
+###
+GET http://localhost:9080/jakartaee-app/api/games/tickets
+
+###
+GET http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8/tickets
+
+###
+GET http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/fa777287-1666-452f-b515-faf164ae235f
+
+###
+DELETE http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/8be52ba8-e2e7-4628-9d5d-cadcdd604c7a
+
+###
+POST http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8/tickets
+Content-Type: application/json
+
+{
+  "stake": 111.111,
+  "status": false
+}
+###
+PUT http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/fa777287-1666-452f-b515-faf164ae235f
+Content-Type: application/json
+
+{
+  "id": "fa777287-1666-452f-b515-faf164ae235f",
+  "stake": 2222.2222,
+  "status": true
+}
+###

@@ -1,6 +1,6 @@
 package com.example.app.views;
 
-import com.example.app.DTOs.PutTicketRequest;
+import com.example.app.DTOs.UpdateTicketRequest;
 import com.example.app.entities.Ticket;
 import com.example.app.services.GameService;
 import com.example.app.services.TicketService;
@@ -30,7 +30,7 @@ public class TicketUpdate implements Serializable {
     private UUID id;
 
     @Getter
-    private PutTicketRequest ticket;
+    private UpdateTicketRequest ticket;
 
     @Getter
     @Setter
@@ -48,7 +48,7 @@ public class TicketUpdate implements Serializable {
     public void init() throws IOException {
         Optional<Ticket> ticket = ticketService.find(this.id);
         if (ticket.isPresent()) {
-            this.ticket = PutTicketRequest.builder()
+            this.ticket = UpdateTicketRequest.builder()
                     .id(ticket.get().getId())
                     .stake(ticket.get().getStake())
                     .status(ticket.get().isWon())
