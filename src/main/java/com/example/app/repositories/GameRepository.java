@@ -73,6 +73,16 @@ public class GameRepository {
         }
     }
 
+    public void updateTicket(UUID gameId, Ticket ticket){
+        Optional<Game> game = this.find(gameId);
+        if(game.isPresent()){
+            Optional<Ticket> ticketToChange = game.get().getTickets().stream().filter(t->t.getId().equals(ticket.getId())).findFirst();
+            if(ticketToChange.isPresent()){
+                ticketToChange.get().setStake(ticket.getStake());
+                ticketToChange.get().setWon(ticket.isWon());
+            }
+        }
+    }
     public List<Ticket> findAllTickets(UUID id) {
         Optional<Game> game = this.find(id);
         if(game.isPresent()){

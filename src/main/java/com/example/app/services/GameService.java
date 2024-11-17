@@ -42,4 +42,7 @@ public class GameService {
     public void deleteGame(UUID id){
         gameRepository.delete(id);
     }
+    public void updateTicket(UUID gameId, Ticket ticket){
+        gameRepository.updateTicket(gameId, ticket);
+    }
 }
