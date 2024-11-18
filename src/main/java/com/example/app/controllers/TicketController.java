@@ -122,7 +122,7 @@ public class TicketController {
             ticket.get().setGame(game.get());
         }
         service.updateTicket(ticket.get());
-        gameService.updateTicket(gameid, ticket.get());
+//        gameService.updateTicket(gameid, ticket.get());
         return Response.ok().build();
     }
 

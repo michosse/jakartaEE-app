@@ -1,6 +1,7 @@
 package com.example.app.entities;
 
 import com.example.app.enums.Gender;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,11 +16,17 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class User implements Serializable {
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
     private UUID id;
     private String name;
     private int age;
     private Gender gender;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Ticket> tickets;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

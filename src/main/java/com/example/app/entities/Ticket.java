@@ -1,5 +1,9 @@
 package com.example.app.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -13,10 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class Ticket implements Serializable {
+@Entity
+@Table(name = "tickets")
+public class Ticket {
+    @Id
     private UUID id;
     private double stake;
     private boolean isWon;
+    @ManyToOne
     private User user;
+    @ManyToOne
     private Game game;
 }

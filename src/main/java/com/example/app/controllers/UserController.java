@@ -81,13 +81,13 @@ public class UserController {
         service.deleteUser(id);
     }
 
-    public byte[] getUsersAvatar(UUID id){
-        return service.getUsersAvatar(id);
-    }
-    public void deleteUsersAvatar(UUID id){
-        service.deleteUsersAvatar(id);
-    }
-    public void putUsersAvatar(UUID id, byte[] avatar){
-        service.putUsersAvatar(id, avatar);
-    }
+//    public byte[] getUsersAvatar(UUID id){
+//        return service.getUsersAvatar(id);
+//    }
+//    public void deleteUsersAvatar(UUID id){
+//        service.deleteUsersAvatar(id);
+//    }
+//    public void putUsersAvatar(UUID id, byte[] avatar){
+//        service.putUsersAvatar(id, avatar);
+//    }
 }
