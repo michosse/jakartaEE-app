@@ -1,9 +1,14 @@
 package com.example.app.repositories;
 
+import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
+import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -11,58 +16,36 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(force = true)
-@ApplicationScoped
+@RequestScoped
 public class TicketRepository {
-    private final Set<Ticket> tickets = new HashSet<>();
-    private final GameRepository gameRepository;
-    private final UserRepository userRepository;
+    private EntityManager em;
 
-    @Inject
-    public TicketRepository(GameRepository gameRepository, UserRepository userRepository) {
-        this.gameRepository = gameRepository;
-        this.userRepository = userRepository;
+    @PersistenceContext
+    public void setEm(EntityManager em){
+        this.em = em;
     }
 
     public Optional<Ticket> find(UUID id){
-        return tickets.stream().filter(t->t.getId().equals(id)).findFirst();
+        return Optional.ofNullable(em.find(Ticket.class, id));
     }
     public List<Ticket> findAll() {
-        return tickets.stream().collect(Collectors.toList());
+        return em.createQuery("select t from Ticket t", Ticket.class).getResultList();
     }
     public void create(Ticket ticket){
-        tickets.add(ticket);
-        if(ticket.getUser() != null){
-            userRepository.addTicket(clone(ticket));
-        }
-        if(ticket.getGame() != null){
-            gameRepository.addTicket(clone(ticket));
+        em.persist(ticket);
+        Optional<Game> game = Optional.ofNullable(em.find(Game.class,ticket.getGame().getId()));
+        if(game.isPresent()){
+            game.get().getTickets().add(ticket);
         }
     }
     public void delete(UUID id){
-        Optional<Ticket> ticket = this.find(id);
-        if(ticket.isPresent()){
-            if(ticket.get().getGame() != null){
-                gameRepository.deleteTicket(id,ticket.get().getGame().getId());
-            }
-            if(ticket.get().getUser() != null){
-                userRepository.deleteTicket(id,ticket.get().getUser().getId());
-            }
-            tickets.removeIf(t->t.getId().equals(id));
-        }
-        else {
+        if(this.find(id).isEmpty()){
             throw new HttpRequestException(404);
         }
+        em.remove(em.find(Ticket.class,id));
     }
     public void update(Ticket ticket){
-        Optional<Ticket> ticketToChange = tickets.stream().filter(t->t.getId().equals(ticket.getId())).findFirst();
-        if(ticketToChange.isPresent()){
-            ticketToChange.get().setWon(ticket.isWon());
-            ticketToChange.get().setStake(ticket.getStake());
-        }
-        else {
-            throw new HttpRequestException("Ticket with this id does not exist", 404);
-        }
+       em.merge(ticket);
     }
 
     @SneakyThrows

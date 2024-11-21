@@ -5,6 +5,18 @@
         <feature>cdi-4.0</feature>
         <feature>faces-4.0</feature>
         <feature>restfulWS-3.1</feature>
+        <feature>persistence-3.1</feature>
     </featureManager>
-    <applicationMonitor updateTrigger="enabled"/>
+
+    <dataSource id="TicketApplicationDataSource" jndiName="jdbc/TicketApplication">
+        <jdbcDriver javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"
+                    javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+                    javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
+                    libraryRef="H2JDBCLib"/>
+        <properties URL="jdbc:h2:mem:ticket-application"/>
+    </dataSource>
+
+    <library id="H2JDBCLib">
+        <fileset dir="${wlp.install.dir}/usr/servers/defaultServer/lib/global/" includes="h2-2.2.220.jar"/>
+    </library>
 </server>

@@ -1,5 +1,6 @@
 package com.example.app.entities;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,10 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-public class Game implements Serializable {
+@Entity
+@Table(name = "games")
+public class Game {
+    @Id
     private UUID id;
     private String team1;
     private String team2;
     private LocalDate gameDay;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 }
