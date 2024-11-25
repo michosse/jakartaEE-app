@@ -6,7 +6,21 @@
         <feature>faces-4.0</feature>
         <feature>restfulWS-3.1</feature>
         <feature>persistence-3.1</feature>
+        <feature>enterpriseBeans-4.0</feature>
+        <feature>appSecurity-5.0</feature>
     </featureManager>
+
+    <application type="war" location="jakartaee-app-1.0-SNAPSHOT.war">
+        <application-bnd>
+            <security-role name="admin">
+                <group name="admin" access-id="group:jdbc/TicketApplication/admin"/>
+                <run-as userid="admin-service"/>
+            </security-role>
+            <security-role name="user">
+                <group name="user" access-id="group:jdbc/TicketApplication/user"/>
+            </security-role>
+        </application-bnd>
+    </application>
 
     <dataSource id="TicketApplicationDataSource" jndiName="jdbc/TicketApplication">
         <jdbcDriver javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"

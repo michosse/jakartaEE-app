@@ -4,6 +4,7 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequestScoped
+@Dependent
 public class GameRepository {
     private EntityManager em;
 

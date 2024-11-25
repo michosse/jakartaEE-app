@@ -6,9 +6,11 @@ import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequestScoped
+@Dependent
 public class UserRepository {
     private EntityManager em;
     @PersistenceContext
@@ -29,6 +31,15 @@ public class UserRepository {
     }
     public Optional<User> find(UUID id) {
         return Optional.ofNullable(em.find(User.class, id));
+    }
+    public Optional<User> findByLogin(String login){
+        try {
+            return Optional.of(em.createQuery("select u from User u where u.name = :login", User.class)
+                    .setParameter("login", login)
+                    .getSingleResult());
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
     public List<User> findAll() {
         return em.createQuery("select u from User u", User.class).getResultList();

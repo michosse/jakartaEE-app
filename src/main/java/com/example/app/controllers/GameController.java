@@ -8,6 +8,8 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.GameService;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -27,28 +29,36 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(force = true)
 @Path("games")
 public class GameController {
-    private final GameService service;
+    private GameService service;
     private final UriInfo uriInfo;
 
     @Inject
-    public GameController(GameService service, UriInfo uriInfo) {
-        this.service = service;
+    public GameController(UriInfo uriInfo) {
         this.uriInfo = uriInfo;
+    }
+
+    @EJB
+    public void setService(GameService service) {
+        this.service = service;
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllGames(){
-        List<Game> games = service.findAll();
-        GetGamesResponse response = GetGamesResponse.builder()
-                .games(games.stream().map(g -> GetGamesResponse.Game.builder()
-                        .id(g.getId())
-                        .gameDay(g.getGameDay())
-                        .team1(g.getTeam1())
-                        .team2(g.getTeam2())
-                        .build()).collect(Collectors.toList()))
-                .build();
-        return Response.ok(response).build();
+        try{
+            List<Game> games = service.findAll();
+            GetGamesResponse response = GetGamesResponse.builder()
+                    .games(games.stream().map(g -> GetGamesResponse.Game.builder()
+                            .id(g.getId())
+                            .gameDay(g.getGameDay())
+                            .team1(g.getTeam1())
+                            .team2(g.getTeam2())
+                            .build()).collect(Collectors.toList()))
+                    .build();
+            return Response.ok(response).build();
+        } catch (EJBException e){
+            return Response.status(401).build();
+        }
     }
 
     @GET
@@ -77,8 +87,11 @@ public class GameController {
         try {
             service.deleteGame(id);
             return Response.noContent().build();
-        } catch (HttpRequestException e){
-            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (EJBException e){
+            if(e.getCause() instanceof HttpRequestException){
+                return Response.status(((HttpRequestException) e.getCause()).getResponseCode()).build();
+            }
+            return Response.status(401).build();
         }
     }
 
@@ -92,11 +105,15 @@ public class GameController {
                 .team2(request.getTeam2())
                 .tickets(new ArrayList<Ticket>())
                 .build();
-        service.createGame(game);
-        return Response.created(uriInfo.getBaseUriBuilder()
-                .path(GameController.class)
-                .path(GameController.class, "getGame")
-                .build(game.getId())).build();
+        try {
+            service.createGame(game);
+            return Response.created(uriInfo.getBaseUriBuilder()
+                    .path(GameController.class)
+                    .path(GameController.class, "getGame")
+                    .build(game.getId())).build();
+        } catch (EJBException e){
+            return Response.status(401).build();
+        }
     }
 
     @PUT
@@ -115,4 +132,5 @@ public class GameController {
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
+
 }

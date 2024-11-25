@@ -1,13 +1,19 @@
+//@no-cookie-jar
 GET http://localhost:9080/jakartaee-app/api/games
+Authorization: Basic YWRtaW46YWRtaW5hZG1pbg==
 
 ###
-GET http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8
+//@no-cookie-jar
+GET http://localhost:9080/jakartaee-app/api/games/2cd3be15-c3bd-4df6-8574-62594ded4672
 
 ###
-DELETE http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8
+//@no-cookie-jar
+DELETE http://localhost:9080/jakartaee-app/api/games/2cd3be15-c3bd-4df6-8574-62594ded4672
 
 ###
+//@no-cookie-jar
 POST http://localhost:9080/jakartaee-app/api/games
+Authorization: Basic YWRtaW46YWRtaW5hZG1pbg==
 Content-Type: application/json
 
 {
@@ -16,6 +22,7 @@ Content-Type: application/json
   "gameDay": "2024-11-04"
 }
 ###
+//@no-cookie-jar
 PUT http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d
 Content-Type: application/json
 
@@ -26,19 +33,25 @@ Content-Type: application/json
   "gameDay": "2024-11-02"
 }
 ###
+//@no-cookie-jar
 GET http://localhost:9080/jakartaee-app/api/games/tickets
+Authorization: Basic dGVzdDE6dXNlcnVzZXI=
 
 ###
-GET http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8/tickets
+//@no-cookie-jar
+GET http://localhost:9080/jakartaee-app/api/games/2cd3be15-c3bd-4df6-8574-62594ded4672/tickets
 
 ###
+//@no-cookie-jar
 GET http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/fa777287-1666-452f-b515-faf164ae235f
 
 ###
-DELETE http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/8be52ba8-e2e7-4628-9d5d-cadcdd604c7a
+//@no-cookie-jar
+DELETE http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/fa777287-1666-452f-b515-faf164ae235f
 
 ###
-POST http://localhost:9080/jakartaee-app/api/games/e609788c-2e6a-4c15-a985-8dff04b799a8/tickets
+//@no-cookie-jar
+POST http://localhost:9080/jakartaee-app/api/games/7feb0f27-a572-427a-8a5b-2e47b3b293bb/tickets
 Content-Type: application/json
 
 {
@@ -46,6 +59,7 @@ Content-Type: application/json
   "status": false
 }
 ###
+//@no-cookie-jar
 PUT http://localhost:9080/jakartaee-app/api/games/d07fd0e3-791c-49cc-870b-4946bf7d828d/tickets/fa777287-1666-452f-b515-faf164ae235f
 Content-Type: application/json
 

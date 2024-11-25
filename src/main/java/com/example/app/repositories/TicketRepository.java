@@ -5,6 +5,7 @@ import com.example.app.entities.Ticket;
 import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -16,7 +17,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequestScoped
+@Dependent
 public class TicketRepository {
     private EntityManager em;
 
@@ -30,6 +31,11 @@ public class TicketRepository {
     }
     public List<Ticket> findAll() {
         return em.createQuery("select t from Ticket t", Ticket.class).getResultList();
+    }
+    public List<Ticket> findByUser(User user){
+        return em.createQuery("select t from Ticket  t where t.user = :user", Ticket.class)
+                .setParameter("user", user)
+                .getResultList();
     }
     public void create(Ticket ticket){
         em.persist(ticket);
