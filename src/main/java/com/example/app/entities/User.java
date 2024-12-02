@@ -1,6 +1,7 @@
 package com.example.app.entities;
 
 import com.example.app.enums.Gender;
+import com.example.app.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class User {
     @Id
     private UUID id;
+    private String password;
     private String name;
     private int age;
     private Gender gender;
@@ -31,4 +33,8 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private byte[] avatar;
+    @CollectionTable(name = "users__roles", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
 }

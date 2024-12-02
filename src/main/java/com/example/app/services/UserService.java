@@ -1,23 +1,28 @@
 package com.example.app.services;
 
 import com.example.app.entities.User;
+import com.example.app.enums.UserRole;
 import com.example.app.repositories.UserRepository;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.ejb.LocalBean;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-@ApplicationScoped
+
+@LocalBean
+@Stateless
 @NoArgsConstructor(force = true)
 public class UserService {
     private final UserRepository repository;
+    private final Pbkdf2PasswordHash hash;
     @Inject
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, Pbkdf2PasswordHash hash) {
         this.repository = repository;
+        this.hash = hash;
     }
     public Optional<User> find(UUID id){
         return repository.find(id);
@@ -25,15 +30,16 @@ public class UserService {
     public List<User> findAllUsers(){
         return repository.findAll();
     }
-    @Transactional
     public void createUser(User user){
+        user.setPassword(hash.generate(user.getPassword().toCharArray()));
+        if(user.getRoles() == null) {
+            user.setRoles(List.of(UserRole.USER));
+        }
         repository.create(user);
     }
-    @Transactional
     public void updateUser(User user){
         repository.update(user);
     }
-    @Transactional
     public void deleteUser(UUID id){
         repository.delete(id);
     }
