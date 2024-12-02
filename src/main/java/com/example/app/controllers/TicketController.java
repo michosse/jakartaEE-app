@@ -81,16 +81,23 @@ public class TicketController {
     @Path("{gameid}/tickets/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTicket(@PathParam("gameid")UUID gameid, @PathParam("id")UUID id){
-        Optional<Ticket> ticket = service.find(id);
-        if(ticket.isPresent() && ticket.get().getGame().getId().equals(gameid)){
-            GetTicketResponse response = GetTicketResponse.builder()
-                    .id(ticket.get().getId())
-                    .stake(ticket.get().getStake())
-                    .status(ticket.get().isWon())
-                    .build();
-            return Response.ok(response).build();
+        try{
+            Optional<Ticket> ticket = service.find(id);
+            if(ticket.isPresent() && ticket.get().getGame().getId().equals(gameid)){
+                GetTicketResponse response = GetTicketResponse.builder()
+                        .id(ticket.get().getId())
+                        .stake(ticket.get().getStake())
+                        .status(ticket.get().isWon())
+                        .build();
+                return Response.ok(response).build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (EJBException e){
+            if(e.getCause() instanceof HttpRequestException){
+                return Response.status(((HttpRequestException) e.getCause()).getResponseCode()).build();
+            }
+            return Response.status(401).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST

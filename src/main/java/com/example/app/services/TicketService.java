@@ -32,8 +32,16 @@ public class TicketService {
         this.userRepository = userRepository;
         this.securityContext = securityContext;
     }
+    @RolesAllowed({UserRole.ADMIN, UserRole.USER})
     public Optional<Ticket> find(UUID id){
-        return ticketRepository.find(id);
+        if(securityContext.isCallerInRole(UserRole.ADMIN)){
+            return ticketRepository.find(id);
+        }
+        Optional<User> user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName());
+        if(user.isEmpty()){
+            throw new HttpRequestException(401);
+        }
+        return ticketRepository.findByUser(id,user.get());
     }
     @RolesAllowed({UserRole.ADMIN, UserRole.USER})
     public List<Ticket> findAll(){
@@ -44,7 +52,7 @@ public class TicketService {
         if(user.isEmpty()){
             return new ArrayList<>();
         }
-        return ticketRepository.findByUser(user.get());
+        return ticketRepository.findAllByUser(user.get());
     }
     @RolesAllowed({UserRole.USER, UserRole.ADMIN})
     public void createTicket(Ticket ticket){
@@ -52,7 +60,9 @@ public class TicketService {
         if(user.isEmpty()){
             throw new HttpRequestException(401);
         }
-        ticket.setUser(user.get());
+        if(ticket.getUser()==null){
+            ticket.setUser(user.get());
+        }
         ticketRepository.create(ticket);
     }
     @RolesAllowed({UserRole.ADMIN, UserRole.USER})

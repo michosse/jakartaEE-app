@@ -32,7 +32,17 @@ public class TicketRepository {
     public List<Ticket> findAll() {
         return em.createQuery("select t from Ticket t", Ticket.class).getResultList();
     }
-    public List<Ticket> findByUser(User user){
+    public Optional<Ticket> findByUser(UUID id, User user){
+        Optional<Ticket> ticket = this.find(id);
+        if(ticket.isEmpty()){
+            throw new HttpRequestException(404);
+        }
+        if(ticket.get().getUser().equals(user)){
+            return ticket;
+        }
+        throw new HttpRequestException(403);
+    }
+    public List<Ticket> findAllByUser(User user){
         return em.createQuery("select t from Ticket  t where t.user = :user", Ticket.class)
                 .setParameter("user", user)
                 .getResultList();
@@ -40,9 +50,14 @@ public class TicketRepository {
     public void create(Ticket ticket){
         em.persist(ticket);
         Optional<Game> game = Optional.ofNullable(em.find(Game.class,ticket.getGame().getId()));
+        Optional<User> user = Optional.ofNullable(em.find(User.class,ticket.getUser().getId()));
         if(game.isPresent()){
             game.get().getTickets().add(ticket);
         }
+        if(user.isPresent()){
+            user.get().getTickets().add(ticket);
+        }
+
     }
     public void delete(UUID id){
         if(this.find(id).isEmpty()){

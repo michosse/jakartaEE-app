@@ -63,6 +63,7 @@ public class UserController {
                 .gender(request.getGender())
                 .age(request.getAge())
                 .tickets(new ArrayList<Ticket>())
+                .password(request.getPassword())
                 .avatar(null)
                 .build();
         service.createUser(user);

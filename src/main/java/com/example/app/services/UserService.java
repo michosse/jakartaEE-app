@@ -1,6 +1,7 @@
 package com.example.app.services;
 
 import com.example.app.entities.User;
+import com.example.app.enums.UserRole;
 import com.example.app.repositories.UserRepository;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
@@ -31,6 +32,9 @@ public class UserService {
     }
     public void createUser(User user){
         user.setPassword(hash.generate(user.getPassword().toCharArray()));
+        if(user.getRoles() == null) {
+            user.setRoles(List.of(UserRole.USER));
+        }
         repository.create(user);
     }
     public void updateUser(User user){
