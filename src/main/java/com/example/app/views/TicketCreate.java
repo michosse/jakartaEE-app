@@ -8,8 +8,10 @@ import com.example.app.services.TicketService;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.SecurityContext;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,9 +21,12 @@ import java.util.stream.Collectors;
 
 @ViewScoped
 @Named
+@Log
 public class TicketCreate implements Serializable {
     private final TicketService ticketService;
     private final GameService gameService;
+    private final SecurityContext securityContext;
+
 
     @Getter
     private UpdateTicketRequest ticket;
@@ -34,9 +39,10 @@ public class TicketCreate implements Serializable {
     private List<UUID> games;
 
     @Inject
-    public TicketCreate(TicketService ticketService, GameService gameService) {
+    public TicketCreate(TicketService ticketService, GameService gameService, SecurityContext securityContext) {
         this.ticketService = ticketService;
         this.gameService = gameService;
+        this.securityContext = securityContext;
     }
 
     public void init(){
@@ -57,6 +63,7 @@ public class TicketCreate implements Serializable {
                 .game(game.get())
                 .build();
         ticketService.createTicket(ticket);
+        log.info(securityContext.getCallerPrincipal().getName()+"submit" + ticket.getId().toString());
         return "/game/game_list.xhtml?faces-redirect=true";
     }
 }

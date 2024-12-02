@@ -7,7 +7,7 @@
     <env-entry>
         <env-entry-name>avatarsPath</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>D:\JakartaEE\jakartaee-app\src\main\resources\com\example\app\configuration\avatars\</env-entry-value>
+        <env-entry-value>PathToYourAvatarsDirectory</env-entry-value>
     </env-entry>
     <servlet>
         <servlet-name>facesServlet</servlet-name>
@@ -30,4 +30,39 @@
     <security-role>
         <role-name>user</role-name>
     </security-role>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>game</web-resource-name>
+            <url-pattern>/game/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>ticket</web-resource-name>
+            <url-pattern>/ticket/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/error/401.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error/403.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error/404.xhtml</location>
+    </error-page>
 </web-app>
