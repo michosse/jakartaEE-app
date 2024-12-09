@@ -12,10 +12,18 @@
     </h:head>
 
     <h:body>
+        <h:form styleClass="container d-flex  align-items-center justify-content-end"
+                rendered="#{facesContext.externalContext.userPrincipal != null}">
+            #{messages.logged}: <h:outputText
+                value="#{facesContext.externalContext.userPrincipal.name}"/>
+            <h:commandButton styleClass="btn btn-link" value="#{messages.logout}"
+                             action="#{userLogout.logoutAction()}"/>
+        </h:form>
         <nav>
             <div style="display: flex">
-                <h:link outcome="/index.xhtml">Home</h:link>
-                <h:link style="margin-left: 10px" outcome="/game/game_list.xhtml">Games</h:link>
+                <h:link outcome="/index.xhtml">#{messages['nav.home']}</h:link>
+                <h:link style="margin-left: 10px" outcome="/game/game_list.xhtml">#{messages['nav.games']}</h:link>
+                <h:link style="margin-left: 10px" outcome="/authentication/form/login.xhtml">#{messages['nav.login']}</h:link>
             </div>
         </nav>
         <h:graphicImage

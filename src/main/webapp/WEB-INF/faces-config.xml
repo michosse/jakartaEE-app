@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config
+        xmlns="https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
+        version="4.0">
+    <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>en</supported-locale>
+            <supported-locale>pl</supported-locale>
+        </locale-config>
+
+        <resource-bundle>
+            <base-name>i18n.view.messages</base-name>
+            <var>messages</var>
+        </resource-bundle>
+        <message-bundle>i18n.view.faces</message-bundle>
+        <resource-bundle>
+            <base-name>i18n.authentication.messages</base-name>
+            <var>auth</var>
+        </resource-bundle>
+        <message-bundle>i18n.view.faces</message-bundle>
+    </application>
+</faces-config>

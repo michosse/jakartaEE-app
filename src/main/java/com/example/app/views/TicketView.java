@@ -4,7 +4,9 @@ import com.example.app.DTOs.GetGameResponse;
 import com.example.app.DTOs.GetTicketResponse;
 import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
+import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.TicketService;
+import jakarta.ejb.EJBException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -36,16 +38,22 @@ public class TicketView implements Serializable {
     }
 
     public void init() throws IOException {
-        Optional<Ticket> ticket = ticketService.find(id);
-        if(ticket.isPresent()){
-            this.ticket = GetTicketResponse.builder()
-                    .id(ticket.get().getId())
-                    .stake(ticket.get().getStake())
-                    .status(ticket.get().isWon())
-                    .build();
-        }
-        else {
-            FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND,"Ticket not found");
+        try{
+            Optional<Ticket> ticket = ticketService.find(id);
+            if(ticket.isPresent()){
+                this.ticket = GetTicketResponse.builder()
+                        .id(ticket.get().getId())
+                        .stake(ticket.get().getStake())
+                        .status(ticket.get().isWon())
+                        .build();
+            }
+            else {
+                FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND,"Ticket not found");
+            }
+        } catch (EJBException e){
+            if(e.getCause() instanceof HttpRequestException){
+                FacesContext.getCurrentInstance().getExternalContext().responseSendError(((HttpRequestException) e.getCause()).getResponseCode(),"Ticket not found");
+            }
         }
     }
 }

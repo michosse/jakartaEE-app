@@ -8,7 +8,7 @@
         <header>
             <h2>Games list</h2>
         </header>
-        <h:dataTable value="#{gamesList.games.games}" var="game">
+        <h:dataTable id="gameTable" value="#{gamesList.games.games}" var="game">
             <h:column>
                 <h:link outcome="/game/game_details.xhtml">
                     <f:param name="id" value="#{game.id}"/>
@@ -26,7 +26,11 @@
             </h:column>
             <h:column>
                 <h:form>
-                    <h:commandButton value="Delete" action="#{gamesList.delete(game.id)}"/>
+                    <h:commandButton value="Delete" action="#{gamesList.delete(game.id)}"
+                                     rendered="#{facesContext.externalContext.isUserInRole('admin')}"
+                    >
+                        <f:ajax execute="@this" render=":gameTable"/>
+                    </h:commandButton>
                 </h:form>
             </h:column>
 

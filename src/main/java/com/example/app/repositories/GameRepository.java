@@ -2,6 +2,7 @@ package com.example.app.repositories;
 
 import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
+import com.example.app.entities.User;
 import com.example.app.exceptions.HttpRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
@@ -71,6 +72,14 @@ public class GameRepository {
         Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
         if(game.isPresent()){
             return em.createQuery("select t from Ticket t where t.game.id = :id", Ticket.class).setParameter("id", id).getResultList();
+        }
+        throw new HttpRequestException(404);
+    }
+
+    public List<Ticket> findAllTicketsByUser(UUID id, User user) {
+        Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
+        if(game.isPresent()){
+            return game.get().getTickets().stream().filter(t -> t.getUser().getId().equals(user.getId())).collect(Collectors.toList());
         }
         throw new HttpRequestException(404);
     }

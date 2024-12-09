@@ -26,7 +26,7 @@
             </div>
             <div>
                 Tickets: <br/>
-                <h:dataTable value="#{gameView.game.tickets}" var="ticket">
+                <h:dataTable id="ticketsTable" value="#{gameView.game.tickets}" var="ticket">
                     <h:column>
                         <h:link outcome="/ticket/ticket_details.xhtml">
                             <f:param name="id" value="#{ticket.id}"/>
@@ -35,7 +35,9 @@
                     </h:column>
                     <h:column>
                         <h:form>
-                            <h:commandButton value="Delete" action="#{gameView.deleteTicket(ticket.id)}"/>
+                            <h:commandButton value="Delete" action="#{gameView.deleteTicket(ticket.id)}">
+                                <f:ajax execute="@this" render=":ticketsTable"/>
+                            </h:commandButton>
                             <h:link outcome="/ticket/ticket_update.xhtml">
                                 <f:param name="id" value="#{ticket.id}"/>
                                 Update
