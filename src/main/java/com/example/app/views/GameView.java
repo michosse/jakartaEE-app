@@ -5,6 +5,7 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.services.GameService;
 import com.example.app.services.TicketService;
+import com.example.app.views.interceptor.LoggerInterceptor;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -63,12 +64,12 @@ public class GameView implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().responseSendError(HttpServletResponse.SC_NOT_FOUND,"Game not found");
         }
     }
+    @LoggerInterceptor
     public void deleteTicket(UUID id) throws IOException {
         GetGameResponse.Ticket ticket = game.getTickets().stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null);
         if(ticket != null){
             game.getTickets().remove(ticket);
         }
         ticketService.deleteTicket(id);
-        log.info(securityContext.getCallerPrincipal().getName()+"deleteTicket" + id.toString());
     }
 }

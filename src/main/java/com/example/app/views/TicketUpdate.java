@@ -5,6 +5,7 @@ import com.example.app.entities.Ticket;
 import com.example.app.exceptions.HttpRequestException;
 import com.example.app.services.GameService;
 import com.example.app.services.TicketService;
+import com.example.app.views.interceptor.LoggerInterceptor;
 import jakarta.ejb.EJBException;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -76,6 +77,7 @@ public class TicketUpdate implements Serializable {
         }
     }
 
+    @LoggerInterceptor
     public String update(){
         Ticket t = Ticket.builder()
                 .id(ticket.getId())
@@ -85,7 +87,6 @@ public class TicketUpdate implements Serializable {
                 .game(ticket.getGame())
                 .build();
         ticketService.updateTicket(t);
-        log.info(securityContext.getCallerPrincipal().getName()+"update" + id.toString());
         return "/ticket/ticket_details.xhtml?faces-redirect=true&id="+t.getId().toString();
     }
 

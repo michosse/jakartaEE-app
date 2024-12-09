@@ -5,6 +5,7 @@ import com.example.app.entities.Game;
 import com.example.app.entities.Ticket;
 import com.example.app.services.GameService;
 import com.example.app.services.TicketService;
+import com.example.app.views.interceptor.LoggerInterceptor;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -53,6 +54,7 @@ public class TicketCreate implements Serializable {
         selected = games.get(0);
     }
 
+    @LoggerInterceptor
     public String submit(){
         Optional<Game> game = gameService.find(selected);
         Ticket ticket = Ticket.builder()
@@ -63,7 +65,6 @@ public class TicketCreate implements Serializable {
                 .game(game.get())
                 .build();
         ticketService.createTicket(ticket);
-        log.info(securityContext.getCallerPrincipal().getName()+"submit" + ticket.getId().toString());
         return "/game/game_list.xhtml?faces-redirect=true";
     }
 }
