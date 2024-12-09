@@ -12,6 +12,9 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
@@ -34,15 +37,22 @@ public class UserRepository {
     }
     public Optional<User> findByLogin(String login){
         try {
-            return Optional.of(em.createQuery("select u from User u where u.name = :login", User.class)
-                    .setParameter("login", login)
-                    .getSingleResult());
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<User> query = cb.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+            query.select(root)
+                    .where(cb.equal(root.get("name"), login));
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException ex) {
             return Optional.empty();
         }
     }
     public List<User> findAll() {
-        return em.createQuery("select u from User u", User.class).getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.select(root);
+        return em.createQuery(query).getResultList();
     }
     public void create(User user){
         em.persist(user);

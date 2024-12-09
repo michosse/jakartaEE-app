@@ -1,13 +1,11 @@
 package com.example.app.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -28,4 +26,18 @@ public class Ticket {
     private User user;
     @ManyToOne
     private Game game;
+    @Version
+    private Long version;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModify;
+
+    @PrePersist
+    public void updateCreatedDate() {
+        createdAt = LocalDateTime.now();
+        lastModify = LocalDateTime.now();
+    }
+    @PreUpdate
+    public void updateModifyDate() {
+        lastModify = LocalDateTime.now();
+    }
 }

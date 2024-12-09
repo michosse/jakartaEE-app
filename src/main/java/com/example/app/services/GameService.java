@@ -53,6 +53,16 @@ public class GameService {
         }
         return gameRepository.findAllTicketsByUser(id, user.get());
     }
+    public List<Ticket> getAllTickets(UUID id, Double stake, Boolean status){
+        if(securityContext.isCallerInRole(UserRole.ADMIN)){
+            return gameRepository.findAllTickets(id, stake, status);
+        }
+        Optional<User> user = userRepository.findByLogin(securityContext.getCallerPrincipal().getName());
+        if(user.isEmpty()){
+            throw new HttpRequestException(401);
+        }
+        return gameRepository.findAllTicketsByUser(id, user.get(), stake, status);
+    }
     @RolesAllowed(UserRole.ADMIN)
     public void createGame(Game game){
         gameRepository.create(game);

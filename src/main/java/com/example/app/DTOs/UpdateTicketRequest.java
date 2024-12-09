@@ -20,4 +20,5 @@ public class UpdateTicketRequest {
     private boolean status;
     private User user;
     private Game game;
+    private Long version;
 }
