@@ -10,6 +10,9 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -30,7 +33,11 @@ public class TicketRepository {
         return Optional.ofNullable(em.find(Ticket.class, id));
     }
     public List<Ticket> findAll() {
-        return em.createQuery("select t from Ticket t", Ticket.class).getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Ticket> query = cb.createQuery(Ticket.class);
+        Root<Ticket> root = query.from(Ticket.class);
+        query.select(root);
+        return em.createQuery(query).getResultList();
     }
     public Optional<Ticket> findByUser(UUID id, User user){
         Optional<Ticket> ticket = this.find(id);
@@ -43,9 +50,12 @@ public class TicketRepository {
         throw new HttpRequestException(403);
     }
     public List<Ticket> findAllByUser(User user){
-        return em.createQuery("select t from Ticket  t where t.user = :user", Ticket.class)
-                .setParameter("user", user)
-                .getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Ticket> query = cb.createQuery(Ticket.class);
+        Root<Ticket> root = query.from(Ticket.class);
+        query.select(root)
+                .where(cb.equal(root.get("user"), user));
+        return em.createQuery(query).getResultList();
     }
     public void create(Ticket ticket){
         em.persist(ticket);

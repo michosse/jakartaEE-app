@@ -34,6 +34,15 @@
                         </h:link>
                     </h:column>
                     <h:column>
+                        <h:outputText value="Version: #{ticket.version}"/>
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="Created at: #{ticket.createdAt}"/>
+                    </h:column>
+                    <h:column>
+                        <h:outputText value="Last modify: #{ticket.lastModify}"/>
+                    </h:column>
+                    <h:column>
                         <h:form>
                             <h:commandButton value="Delete" action="#{gameView.deleteTicket(ticket.id)}">
                                 <f:ajax execute="@this" render=":ticketsTable"/>

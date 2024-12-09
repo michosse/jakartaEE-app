@@ -10,6 +10,9 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
@@ -27,7 +30,11 @@ public class GameRepository {
         return Optional.ofNullable(em.find(Game.class, id));
     }
     public List<Game> findAll(){
-        return em.createQuery("select g from Game g", Game.class).getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Game> query = cb.createQuery(Game.class);
+        Root<Game> root = query.from(Game.class);
+        query.select(root);
+        return em.createQuery(query).getResultList();
     }
     public void create(Game game){
         em.persist(game);
@@ -71,7 +78,11 @@ public class GameRepository {
     public List<Ticket> findAllTickets(UUID id) {
         Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
         if(game.isPresent()){
-            return em.createQuery("select t from Ticket t where t.game.id = :id", Ticket.class).setParameter("id", id).getResultList();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Ticket> query = cb.createQuery(Ticket.class);
+            Root<Ticket> root = query.from(Ticket.class);
+            query.select(root).where(cb.equal(root.get("game").get("id"), id));
+            return em.createQuery(query).getResultList();
         }
         throw new HttpRequestException(404);
     }

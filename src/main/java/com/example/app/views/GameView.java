@@ -57,6 +57,9 @@ public class GameView implements Serializable {
                     .team2(game.get().getTeam2())
                     .tickets(tickets.stream().map(t-> GetGameResponse.Ticket.builder()
                             .id(t.getId())
+                            .version(t.getVersion())
+                            .lastModify(t.getLastModify())
+                            .createdAt(t.getCreatedAt())
                             .build()).collect(Collectors.toList()))
                     .build();
         }
