@@ -15,6 +15,22 @@
             <h2>Game detailst</h2>
         </header>
         <div>
+            <h:form id="filterForm">
+
+                <div>
+                    Stake: <h:inputText id="stakeID" value="#{gameView.filterStake}"/>
+                </div>
+                <div>
+                    Status:
+                    <h:selectOneListbox id="optionList" value="#{gameView.filterStatus}">
+                        <f:selectItems value="#{gameView.values}"/>
+                    </h:selectOneListbox>
+                </div>
+                <h:commandButton value="Submit" action="#{gameView.filter()}">
+                    <f:ajax execute="@form" render="ticketsTable"/>
+                </h:commandButton>
+            </h:form>
+
             <div>
                 Id: <h:outputText value="#{gameView.game.id}"/>
             </div>

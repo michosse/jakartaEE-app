@@ -18,6 +18,7 @@ import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,11 +40,26 @@ public class GameView implements Serializable {
     @Getter
     private GetGameResponse game;
 
+    @Getter
+    @Setter
+    private Boolean filterStatus;
+
+    @Getter
+    @Setter
+    private Double filterStake;
+
+    @Getter
+    @Setter
+    private List<Boolean> values= new ArrayList<>();
+
     @Inject
     public GameView(GameService service, TicketService ticketService, SecurityContext securityContext) {
         this.gameService = service;
         this.ticketService = ticketService;
         this.securityContext = securityContext;
+        values.add(Boolean.FALSE);
+        values.add(Boolean.TRUE);
+        values.add(null);
     }
 
     public void init() throws IOException {
@@ -74,5 +90,15 @@ public class GameView implements Serializable {
             game.getTickets().remove(ticket);
         }
         ticketService.deleteTicket(id);
+    }
+    @LoggerInterceptor
+    public void filter(){
+        List<Ticket> tickets = gameService.getAllTickets(id, this.filterStake, this.filterStatus);
+        this.game.setTickets(tickets.stream().map(t-> GetGameResponse.Ticket.builder()
+                .id(t.getId())
+                .version(t.getVersion())
+                .createdAt(t.getCreatedAt())
+                .lastModify(t.getLastModify())
+                .build()).collect(Collectors.toList()));
     }
 }

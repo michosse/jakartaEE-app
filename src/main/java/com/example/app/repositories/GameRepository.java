@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.NoArgsConstructor;
 
@@ -49,12 +50,12 @@ public class GameRepository {
         em.merge(game);
     }
     public void addTicket(Ticket ticket){
-       Optional<Game> game = Optional.ofNullable(em.find(Game.class,ticket.getGame().getId()));
-       if(game.isPresent()){
-           game.get().getTickets().add(ticket);
-       }
+        Optional<Game> game = Optional.ofNullable(em.find(Game.class,ticket.getGame().getId()));
+        if(game.isPresent()){
+            game.get().getTickets().add(ticket);
+        }
     }
-//    public void deleteTicket(UUID ticketId, UUID gameId){
+    //    public void deleteTicket(UUID ticketId, UUID gameId){
 //        Optional<Game> game = this.find(gameId);
 //        if(game.isPresent()){
 //            Optional<Ticket> ticket = game.get().getTickets().stream().filter(t->t.getId().equals(ticketId)).findFirst();
@@ -87,11 +88,52 @@ public class GameRepository {
         throw new HttpRequestException(404);
     }
 
+    public List<Ticket> findAllTickets(UUID id, Double stake, Boolean status) {
+        Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
+        if(game.isPresent()){
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Ticket> query = cb.createQuery(Ticket.class);
+            Root<Ticket> root = query.from(Ticket.class);
+            List<Predicate> predicates = this.createFilter(id, stake, status, root, cb);
+            query.where(cb.and(predicates.toArray(new Predicate[0])));
+            query.select(root);
+            return em.createQuery(query).getResultList();
+        }
+        throw new HttpRequestException(404);
+    }
+
     public List<Ticket> findAllTicketsByUser(UUID id, User user) {
         Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
         if(game.isPresent()){
             return game.get().getTickets().stream().filter(t -> t.getUser().getId().equals(user.getId())).collect(Collectors.toList());
         }
         throw new HttpRequestException(404);
+    }
+
+    public List<Ticket> findAllTicketsByUser(UUID id, User user, Double stake, Boolean status) {
+        Optional<Game> game = Optional.ofNullable(em.find(Game.class, id));
+        if(game.isPresent()){
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Ticket> query = cb.createQuery(Ticket.class);
+            Root<Ticket> root = query.from(Ticket.class);
+            List<Predicate> predicates = this.createFilter(id, stake, status, root, cb);
+            predicates.add(cb.equal(root.get("user").get("id"), user.getId()));
+            query.where(cb.and(predicates.toArray(new Predicate[0])));
+            query.select(root);
+            return em.createQuery(query).getResultList();
+        }
+        throw new HttpRequestException(404);
+    }
+
+    private List<Predicate> createFilter(UUID id, Double stake, Boolean status, Root<Ticket> root, CriteriaBuilder cb){
+        List<Predicate> predicates = new ArrayList<>();
+        if(status != null){
+            predicates.add(cb.equal(root.get("isWon"), status));
+        }
+        if(stake != null){
+            predicates.add(cb.equal(root.get("stake"), stake));
+        }
+        predicates.add(cb.equal(root.get("game").get("id"), id));
+        return predicates;
     }
 }
